@@ -1,45 +1,34 @@
-import { useEffect, useRef, useState } from "react";
-import { SearchBar } from "@/components/molecules/SearchBar";
-import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import { EmptyStateMessage } from "@/components/atoms/EmptyStateMessage";
+import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
+import { SearchBar } from "@/components/molecules/SearchBar";
 import clsx from "clsx";
 
 type Suggestion = {
   id: string;
   label: string;
 };
-const mockFetch = async (query: string): Promise<Suggestion[]> => {
-  const mockData = [
-    { id: "1", label: "Apple" },
-    { id: "2", label: "Banana" },
-    { id: "3", label: "Cherry" },
-    { id: "4", label: "Date" },
-    { id: "5", label: "Elderberry" },
-  ];
-  return mockData.filter((item) =>
-    item.label.toLowerCase().includes(query.toLowerCase())
-  );
-};
-type SearchWithMockAutocompleteProps = {
-  fetchSuggestions?: (query: string) => Promise<Suggestion[]>;
-};
 
-export const SearchWithMockAutocomplete: React.FC<
-  SearchWithMockAutocompleteProps
-> = ({ fetchSuggestions = mockFetch }) => {
-  const justSelectedRef = useRef(false);
+export const SearchWithFuseSearchAutocomplete: React.FC = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const [selected, setSelected] = useState<Suggestion | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selected, setSelected] = useState<Suggestion | null>(null);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const justSelectedRef = useRef(false);
+  const fetchSuggestions = async (query: string): Promise<Suggestion[]> => {
+    const res = await fetch(`/api/fuse-search?q=${query}`);
+    return res.json();
+  };
   useEffect(() => {
     if (!query) {
       setResults([]);
       setIsLoading(false);
       return;
     }
+
     if (justSelectedRef.current) {
       justSelectedRef.current = false;
       return;
@@ -55,26 +44,23 @@ export const SearchWithMockAutocomplete: React.FC<
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
+  const handleSelect = (item: Suggestion) => {
+    setSelected(item);
+    setQuery(item.label);
+    setResults([]);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
-      setActiveIndex((prev) => Math.min(prev + 1, results.length - 1));
+      setActiveIndex((i) => Math.min(i + 1, results.length - 1));
     } else if (e.key === "ArrowUp") {
-      setActiveIndex((prev) => Math.max(prev - 1, 0));
+      setActiveIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter" && results[activeIndex]) {
       handleSelect(results[activeIndex]);
     }
   };
 
-  const handleSelect = (item: Suggestion) => {
-    justSelectedRef.current = true;
-    setSelected(item);
-    setQuery(item.label);
-    setResults([]);
-    setActiveIndex(-1);
-  };
-
   const listboxId = "autocomplete-options";
-
   return (
     <div
       className="w-full max-w-md space-y-4"
@@ -90,6 +76,7 @@ export const SearchWithMockAutocomplete: React.FC<
             setQuery(e.target.value);
             setSelected(null);
           }}
+          onUserTyping={() => {}}
           placeholder="Search for fruits..."
           onKeyDown={handleKeyDown}
           aria-autocomplete="list"

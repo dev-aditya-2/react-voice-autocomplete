@@ -1,8 +1,12 @@
 "use client";
 
 import { Heading } from "@/components/atoms/Heading";
+import { SearchWithAlgoliaAutocomplete } from "@/components/organisms/searchWithAlgolia/SearchWithAlgoliaAutocomplete";
 import { SearchWithApiAutocomplete } from "@/components/organisms/searchWithApi/SearchWithApiAutocomplete";
+import { SearchWithFusePlusVoiceSearchAutocomplete } from "@/components/organisms/searchWithFuse/SearchWithFusePlusVoiceSearchAutocomplete";
+import { SearchWithFuseSearchAutocomplete } from "@/components/organisms/searchWithFuse/SearchWithFusesearchAutocomplete";
 import { SearchWithMockAutocomplete } from "@/components/organisms/searchWithMock/SearchWithMockAutocomplete";
+
 
 export default function Home() {
   return (
@@ -26,7 +30,18 @@ export default function Home() {
           <Heading level={3}>Feature 2: Autocomplete search using internal API</Heading>
           <SearchWithApiAutocomplete />
         </div>
-       
+        <div className="space-y-4">
+          <Heading level={3}>Feature 3: Autocomplete with Fuse search</Heading>
+          <SearchWithFuseSearchAutocomplete />
+        </div>
+        <div className="space-y-4">
+          <Heading level={3}>Feature 4: Autocomplete with Algolia search</Heading>
+          <SearchWithAlgoliaAutocomplete />
+        </div>
+        <div className="space-y-4">
+          <Heading level={3}>Feature 5: Autocomplete with Fuse search and voice search</Heading>
+          <SearchWithFusePlusVoiceSearchAutocomplete />
+        </div>
       </div>
     </main>
   );

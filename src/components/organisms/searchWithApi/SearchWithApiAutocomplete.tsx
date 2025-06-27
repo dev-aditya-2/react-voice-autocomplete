@@ -1,5 +1,10 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
+import { EmptyStateMessage } from "@/components/atoms/EmptyStateMessage";
+import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
+import { SearchBar } from "@/components/molecules/SearchBar";
+import clsx from "clsx";
 
 type Suggestion = {
   id: string;
@@ -11,6 +16,7 @@ export const SearchWithApiAutocomplete: React.FC = () => {
   const [results, setResults] = useState<Suggestion[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selected, setSelected] = useState<Suggestion | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const justSelectedRef = useRef(false);
 
   const fetchSuggestions = async (query: string): Promise<Suggestion[]> => {
@@ -27,13 +33,22 @@ export const SearchWithApiAutocomplete: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!query || justSelectedRef.current) {
+    if (!query) {
+      setResults([]);
+      setIsLoading(false);
+      return;
+    }
+
+    if (justSelectedRef.current) {
       justSelectedRef.current = false;
       return;
     }
 
+    setIsLoading(true);
     const delayDebounce = setTimeout(() => {
-      fetchSuggestions(query).then(setResults);
+      fetchSuggestions(query)
+        .then(setResults)
+        .finally(() => setIsLoading(false));
     }, 300);
 
     return () => clearTimeout(delayDebounce);
@@ -49,28 +64,56 @@ export const SearchWithApiAutocomplete: React.FC = () => {
     }
   };
 
+  const listboxId = "api-autocomplete-options";
+
   return (
-    <div className="w-full max-w-md space-y-4">
+    <div
+      className="w-full max-w-md space-y-4"
+      role="combobox"
+      aria-haspopup="listbox"
+      aria-owns={listboxId}
+      aria-expanded={results.length > 0}
+    >
       <div className="relative">
-        <input
-          className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        <SearchBar
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setSelected(null);
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Search fruits from API..."
+          aria-autocomplete="list"
+          aria-controls={listboxId}
+          aria-activedescendant={
+            activeIndex >= 0 ? `option-${results[activeIndex].id}` : undefined
+          }
         />
+        {isLoading && <LoadingIndicator message="Searching..." />}
+        {!isLoading && query && !selected && results.length === 0 && (
+          <EmptyStateMessage message="No results found for your search." />
+        )}
 
-        {results.length > 0 && (
-          <ul className="absolute left-0 right-0 z-10 mt-1 border border-gray-300 bg-white rounded-md shadow-md max-h-60 overflow-y-auto">
-            {results.map((result, index) => (
+        {!isLoading && query && results.length > 0 && (
+          <ul
+            id={listboxId}
+            role="listbox"
+            className="border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100"
+          >
+            {results.map((fruit, index) => (
               <li
-                key={result.id}
-                className={`px-4 py-2 cursor-pointer ${
-                  index === activeIndex ? "bg-blue-100" : ""
-                }`}
-                onMouseDown={() => handleSelect(result)}
+                key={fruit.id}
+                role="option"
+                aria-selected={index === activeIndex}
+                className={clsx(
+                  "px-4 py-2 text-sm text-gray-700 cursor-pointer transition-colors",
+                  index === activeIndex
+                    ? "bg-blue-100 font-medium"
+                    : "hover:bg-gray-100"
+                )}
+                onMouseDown={() => handleSelect(fruit)}
               >
-                {result.label}
+                {fruit.label}
               </li>
             ))}
           </ul>
