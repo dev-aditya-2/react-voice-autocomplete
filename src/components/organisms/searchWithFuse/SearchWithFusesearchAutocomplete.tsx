@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { EmptyStateMessage } from "@/components/atoms/EmptyStateMessage";
-import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
-import { SearchBar } from "@/components/molecules/SearchBar";
 import clsx from "clsx";
+import { SearchBar } from "../../molecules/SearchBar";
+import { LoadingIndicator } from "../../atoms/LoadingIndicator";
+import { EmptyStateMessage } from "../../atoms/EmptyStateMessage";
 
 type Suggestion = {
   id: string;

@@ -1,32 +1,31 @@
 {
-  "name": "nextjs-search-autocomplete",
-  "version": "0.1.0",
-  "private": true,
+  "name": "react-voice-autocomplete",
+  "version": "0.1.1",
+  "description": "React autocomplete components with both voice and manual (typed) search support, including Algolia, Fuse.js, API, and mock data options.",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "src"],
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "build": "tsc --declaration --emitDeclarationOnly false",
+    "lint": "eslint src --ext .ts,.tsx"
   },
-  "dependencies": {
-    "algoliasearch": "^5.29.0",
-    "clsx": "^2.1.1",
-    "dotenv": "^16.5.0",
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
     "fuse.js": "^7.1.0",
-    "lucide-react": "^0.514.0",
-    "next": "15.3.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "algoliasearch": "^5.29.0",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.3",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "eslint": "^9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dev-aditya-2/react-voice-autocomplete"
+  },
+  "keywords": ["react", "autocomplete", "search", "voice", "manual", "algolia", "fuse.js", "voice search"],
+  "author": "Your Name",
+  "license": "MIT"
 }

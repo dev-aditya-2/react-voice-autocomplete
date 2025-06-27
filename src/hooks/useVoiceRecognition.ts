@@ -12,7 +12,9 @@ export const useVoiceRecognition = () => {
   useEffect(() => {
     const SpeechRecognition =
       typeof window !== "undefined"
-        ? (window.SpeechRecognition || (window as any).webkitSpeechRecognition)
+        ? (window as any).SpeechRecognition ||
+          (window as any).webkitSpeechRecognition ||
+          null
         : null;
 
     if (!SpeechRecognition) {

@@ -1,7 +1,9 @@
-import { useVoiceRecognition } from "@/hooks/useVoiceRecognition";
-import { MicButton } from "@/components/atoms/MicButton";
+
 import { useEffect, useRef } from "react";
 import { VoiceStatusIndicator } from "../atoms/VoiceStatusIndicator";
+import { useVoiceRecognition } from "../../hooks/useVoiceRecognition";
+import { MicButton } from "../atoms/MicButton";
+
 type VoiceSearchInputProps = {
   onResult: (text: string) => void;
   onError?: (error: string) => void;

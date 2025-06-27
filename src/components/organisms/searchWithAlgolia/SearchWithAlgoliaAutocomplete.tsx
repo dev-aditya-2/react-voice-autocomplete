@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
-import { SearchBar } from "@/components/molecules/SearchBar";
 import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { Flame, Star } from "lucide-react";
 import { VoiceSearchInput } from "../VoiceSearchInput";
-import { EmptyStateMessage } from "@/components/atoms/EmptyStateMessage";
+import { EmptyStateMessage } from "../../atoms/EmptyStateMessage";
 import clsx from "clsx";
-import { VoiceErrorBanner } from "@/components/atoms/VoiceErrorBanner";
+import { VoiceErrorBanner } from "../../atoms/VoiceErrorBanner";
+import { LoadingIndicator } from "../../atoms/LoadingIndicator";
+import { SearchBar } from "../../molecules/SearchBar";
 
 type Suggestion = {
   objectID: string;

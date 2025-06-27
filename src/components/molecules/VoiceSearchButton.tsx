@@ -1,9 +1,9 @@
 import { Mic } from "lucide-react";
-import { Button } from "@/components/atoms/Button";
+import { Button } from "../atoms/Button";
 
 export const VoiceSearchButton: React.FC<{ onResult: (text: string) => void }> = ({ onResult }) => {
   const handleClick = () => {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("Voice recognition not supported");
       return;

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { SearchBar } from "@/components/molecules/SearchBar";
-import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
-import { EmptyStateMessage } from "@/components/atoms/EmptyStateMessage";
 import clsx from "clsx";
+import { SearchBar } from "../../molecules/SearchBar";
+import { LoadingIndicator } from "../../atoms/LoadingIndicator";
+import { EmptyStateMessage } from "../../atoms/EmptyStateMessage";
 
 type Suggestion = {
   id: string;

@@ -3,12 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import Fuse from "fuse.js";
 import { fruits } from "./data";
-import { SearchBar } from "@/components/molecules/SearchBar";
-import { LoadingIndicator } from "@/components/atoms/LoadingIndicator";
 import { VoiceSearchInput } from "../VoiceSearchInput";
-import { EmptyStateMessage } from "@/components/atoms/EmptyStateMessage";
 import clsx from "clsx";
-import { VoiceErrorBanner } from "@/components/atoms/VoiceErrorBanner";
+import { SearchBar } from "../../molecules/SearchBar";
+import { LoadingIndicator } from "../../atoms/LoadingIndicator";
+import { EmptyStateMessage } from "../../atoms/EmptyStateMessage";
+import { VoiceErrorBanner } from "../../atoms/VoiceErrorBanner";
 
 type Fruit = (typeof fruits)[number];
 
