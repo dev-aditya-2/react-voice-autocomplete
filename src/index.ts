@@ -4,3 +4,4 @@ export { SearchWithFuseSearchAutocomplete } from './components/organisms/searchW
 export { SearchWithFusePlusVoiceSearchAutocomplete } from './components/organisms/searchWithFuse/SearchWithFusePlusVoiceSearchAutocomplete';
 export { SearchWithMockAutocomplete } from './components/organisms/searchWithMock/SearchWithMockAutocomplete';
 export { VoiceSearchInput } from './components/organisms/VoiceSearchInput'; 
+export { SearchWithMeilisearchAutocomplete } from './components/organisms/searchWithMeilisearch/SearchWithMeilisearchAutocomplete'; 

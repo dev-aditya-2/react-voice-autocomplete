@@ -11,7 +11,15 @@ type Suggestion = {
   label: string;
 };
 
-export const SearchWithApiAutocomplete: React.FC = () => {
+type SearchWithApiAutocompleteProps = {
+  apiUrl?: string;
+  fetchSuggestions?: (query: string) => Promise<Suggestion[]>;
+};
+
+export const SearchWithApiAutocomplete: React.FC<SearchWithApiAutocompleteProps> = ({
+  apiUrl = "/api/suggestions",
+  fetchSuggestions: customFetchSuggestions,
+}) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -20,7 +28,8 @@ export const SearchWithApiAutocomplete: React.FC = () => {
   const justSelectedRef = useRef(false);
 
   const fetchSuggestions = async (query: string): Promise<Suggestion[]> => {
-    const res = await fetch(`/api/suggestions?q=${query}`);
+    if (customFetchSuggestions) return customFetchSuggestions(query);
+    const res = await fetch(`${apiUrl}?q=${query}`);
     return res.json();
   };
 
@@ -82,7 +91,7 @@ export const SearchWithApiAutocomplete: React.FC = () => {
             setSelected(null);
           }}
           onKeyDown={handleKeyDown}
-          placeholder="Search fruits from API..."
+          placeholder="Search from API..."
           aria-autocomplete="list"
           aria-controls={listboxId}
           aria-activedescendant={
@@ -100,9 +109,9 @@ export const SearchWithApiAutocomplete: React.FC = () => {
             role="listbox"
             className="border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100"
           >
-            {results.map((fruit, index) => (
+            {results.map((item, index) => (
               <li
-                key={fruit.id}
+                key={item.id}
                 role="option"
                 aria-selected={index === activeIndex}
                 className={clsx(
@@ -111,9 +120,9 @@ export const SearchWithApiAutocomplete: React.FC = () => {
                     ? "bg-blue-100 font-medium"
                     : "hover:bg-gray-100"
                 )}
-                onMouseDown={() => handleSelect(fruit)}
+                onMouseDown={() => handleSelect(item)}
               >
-                {fruit.label}
+                {item.label}
               </li>
             ))}
           </ul>

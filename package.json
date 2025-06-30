@@ -1,6 +1,6 @@
 {
   "name": "react-voice-autocomplete",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "description": "React autocomplete components with both voice and manual (typed) search support, including Algolia, Fuse.js, API, and mock data options.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -11,6 +11,7 @@
     "lint": "eslint src --ext .ts,.tsx"
   },
   "peerDependencies": {
+    "lucide-react": "^0.514.0",
     "react": ">=18",
     "react-dom": ">=18",
     "fuse.js": "^7.1.0",
@@ -19,13 +20,14 @@
   },
   "devDependencies": {
     "typescript": "^5",
-    "eslint": "^9"
+    "eslint": "^9",
+    "lucide-react": "^0.514.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/dev-aditya-2/react-voice-autocomplete"
   },
   "keywords": ["react", "autocomplete", "search", "voice", "manual", "algolia", "fuse.js", "voice search"],
-  "author": "Your Name",
+  "author": "Aditya dev",
   "license": "MIT"
 }

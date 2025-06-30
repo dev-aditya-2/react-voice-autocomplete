@@ -11,17 +11,27 @@ type Suggestion = {
   label: string;
 };
 
-export const SearchWithFuseSearchAutocomplete: React.FC = () => {
+type SearchWithFuseSearchAutocompleteProps = {
+  fetchSuggestions?: (query: string) => Promise<Suggestion[]>;
+  placeholder?: string;
+};
+
+const defaultFetchSuggestions = async (query: string): Promise<Suggestion[]> => {
+  const res = await fetch(`/api/fuse-search?q=${query}`);
+  return res.json();
+};
+
+export const SearchWithFuseSearchAutocomplete: React.FC<SearchWithFuseSearchAutocompleteProps> = ({
+  fetchSuggestions = defaultFetchSuggestions,
+  placeholder = "Search for fruits...",
+}) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState<Suggestion | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const justSelectedRef = useRef(false);
-  const fetchSuggestions = async (query: string): Promise<Suggestion[]> => {
-    const res = await fetch(`/api/fuse-search?q=${query}`);
-    return res.json();
-  };
+
   useEffect(() => {
     if (!query) {
       setResults([]);
@@ -77,7 +87,7 @@ export const SearchWithFuseSearchAutocomplete: React.FC = () => {
             setSelected(null);
           }}
           onUserTyping={() => {}}
-          placeholder="Search for fruits..."
+          placeholder={placeholder}
           onKeyDown={handleKeyDown}
           aria-autocomplete="list"
           aria-controls={listboxId}

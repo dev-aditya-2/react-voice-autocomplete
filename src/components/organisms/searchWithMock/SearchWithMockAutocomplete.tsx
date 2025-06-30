@@ -22,11 +22,12 @@ const mockFetch = async (query: string): Promise<Suggestion[]> => {
 };
 type SearchWithMockAutocompleteProps = {
   fetchSuggestions?: (query: string) => Promise<Suggestion[]>;
+  placeholder?: string;
 };
 
 export const SearchWithMockAutocomplete: React.FC<
   SearchWithMockAutocompleteProps
-> = ({ fetchSuggestions = mockFetch }) => {
+> = ({ fetchSuggestions = mockFetch, placeholder = "Search for fruits..." }) => {
   const justSelectedRef = useRef(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
@@ -90,7 +91,7 @@ export const SearchWithMockAutocomplete: React.FC<
             setQuery(e.target.value);
             setSelected(null);
           }}
-          placeholder="Search for fruits..."
+          placeholder={placeholder}
           onKeyDown={handleKeyDown}
           aria-autocomplete="list"
           aria-controls={listboxId}

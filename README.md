@@ -17,6 +17,11 @@ npm install react-voice-autocomplete
 yarn add react-voice-autocomplete
 ```
 
+> **Note:** You must also install [lucide-react](https://www.npmjs.com/package/lucide-react) in your project, as it is a peer dependency:
+> ```bash
+> npm install lucide-react
+> ```
+
 ## Usage
 
 ```tsx

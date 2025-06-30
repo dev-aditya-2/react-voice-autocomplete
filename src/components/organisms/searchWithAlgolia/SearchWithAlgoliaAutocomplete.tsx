@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { liteClient as algoliasearch } from "algoliasearch/lite";
 import { Flame, Star } from "lucide-react";
 import { VoiceSearchInput } from "../VoiceSearchInput";
 import { EmptyStateMessage } from "../../atoms/EmptyStateMessage";
@@ -9,6 +8,7 @@ import clsx from "clsx";
 import { VoiceErrorBanner } from "../../atoms/VoiceErrorBanner";
 import { LoadingIndicator } from "../../atoms/LoadingIndicator";
 import { SearchBar } from "../../molecules/SearchBar";
+import { algoliasearch } from "algoliasearch";
 
 type Suggestion = {
   objectID: string;
@@ -21,11 +21,6 @@ type Suggestion = {
   popularity: number;
   vote_average: number;
 };
-
-const client = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
-  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!
-);
 
 const index = "algolia_movie_sample_dataset";
 
@@ -40,6 +35,8 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const suppressSearchRef = useRef(false);
   const justSelectedRef = useRef(false);
+  const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!, process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!);
+
   const search = async (query: string) => {
     if (!query.trim()) {
       setResults([]);
