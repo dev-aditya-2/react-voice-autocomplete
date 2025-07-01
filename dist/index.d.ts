@@ -4,3 +4,9 @@ export { SearchWithFuseSearchAutocomplete } from './components/organisms/searchW
 export { SearchWithFusePlusVoiceSearchAutocomplete } from './components/organisms/searchWithFuse/SearchWithFusePlusVoiceSearchAutocomplete';
 export { SearchWithMockAutocomplete } from './components/organisms/searchWithMock/SearchWithMockAutocomplete';
 export { VoiceSearchInput } from './components/organisms/VoiceSearchInput';
+export { SearchWithMeilisearchAutocomplete } from './components/organisms/searchWithMeilisearch/SearchWithMeilisearchAutocomplete';
+export { MicButton } from './components/atoms/MicButton';
+export { SearchBar } from './components/molecules/SearchBar';
+export { EmptyStateMessage } from './components/atoms/EmptyStateMessage';
+export { LoadingIndicator } from './components/atoms/LoadingIndicator';
+export { VoiceErrorBanner } from './components/atoms/VoiceErrorBanner';

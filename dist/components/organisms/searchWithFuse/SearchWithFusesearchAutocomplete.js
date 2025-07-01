@@ -9,7 +9,14 @@ const defaultFetchSuggestions = async (query) => {
     const res = await fetch(`/api/fuse-search?q=${query}`);
     return res.json();
 };
-export const SearchWithFuseSearchAutocomplete = ({ fetchSuggestions = defaultFetchSuggestions, placeholder = "Search for fruits...", }) => {
+/**
+ * Headless SearchWithFuseSearchAutocomplete: No default styles, only logic and structure.
+ * - containerClassName: for the search bar wrapper
+ * - searchBarClassName: for the search bar
+ * - resultsListClassName: for the results list
+ * - selectedTextClassName: for the selected text
+ */
+export const SearchWithFuseSearchAutocomplete = ({ fetchSuggestions = defaultFetchSuggestions, placeholder = "Search for fruits...", containerClassName = "", searchBarClassName = "", inputClassName = "", resultsListClassName = "", selectedTextClassName = "", micButtonClassName = "", voiceWrapperClassName = "", resultItemClassName = "", loadingIndicatorClassName = "", loadingIndicator, }) => {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -51,10 +58,8 @@ export const SearchWithFuseSearchAutocomplete = ({ fetchSuggestions = defaultFet
         }
     };
     const listboxId = "autocomplete-options";
-    return (_jsxs("div", { className: "w-full max-w-md space-y-4", role: "combobox", "aria-haspopup": "listbox", "aria-owns": listboxId, "aria-expanded": results.length > 0, children: [_jsxs("div", { className: "relative", children: [_jsx(SearchBar, { value: query, onChange: (e) => {
-                            setQuery(e.target.value);
-                            setSelected(null);
-                        }, onUserTyping: () => { }, placeholder: placeholder, onKeyDown: handleKeyDown, "aria-autocomplete": "list", "aria-controls": listboxId, "aria-activedescendant": activeIndex >= 0 ? `option-${results[activeIndex].id}` : undefined }), isLoading && _jsx(LoadingIndicator, { message: "Searching..." }), !isLoading && query && !selected && results.length === 0 && (_jsx(EmptyStateMessage, { message: "No results found for your search." })), !isLoading && query && results.length > 0 && (_jsx("ul", { id: listboxId, role: "listbox", className: "border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100", children: results.map((fruit, index) => (_jsx("li", { role: "option", "aria-selected": index === activeIndex, className: clsx("px-4 py-2 text-sm text-gray-700 cursor-pointer transition-colors", index === activeIndex
-                                ? "bg-blue-100 font-medium"
-                                : "hover:bg-gray-100"), onMouseDown: () => handleSelect(fruit), children: fruit.label }, fruit.id))) }))] }), selected && (_jsxs("p", { className: "text-gray-700", children: ["You selected: ", _jsx("strong", { children: selected.label })] }))] }));
+    return (_jsxs("div", { role: "combobox", "aria-haspopup": "listbox", "aria-owns": listboxId, "aria-expanded": results.length > 0, children: [_jsx("div", { className: containerClassName, children: _jsx(SearchBar, { value: query, onChange: (e) => {
+                        setQuery(e.target.value);
+                        setSelected(null);
+                    }, onUserTyping: () => { }, placeholder: placeholder, onKeyDown: handleKeyDown, "aria-autocomplete": "list", "aria-controls": listboxId, "aria-activedescendant": activeIndex >= 0 ? `option-${results[activeIndex].id}` : undefined, className: searchBarClassName, inputClassName: inputClassName }) }), isLoading && (loadingIndicator ? (_jsx("div", { className: loadingIndicatorClassName, children: loadingIndicator })) : (_jsx(LoadingIndicator, { message: "Searching...", className: loadingIndicatorClassName }))), !isLoading && query && !selected && results.length === 0 && (_jsx(EmptyStateMessage, { message: "No results found for your search." })), !isLoading && query && results.length > 0 && (_jsx("ul", { id: listboxId, role: "listbox", className: clsx(resultsListClassName, "border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100 mt-2"), children: results.map((fruit, index) => (_jsx("li", { role: "option", "aria-selected": index === activeIndex, className: clsx(resultItemClassName, "px-4 py-2 cursor-pointer hover:bg-blue-50 focus:bg-blue-100 transition"), onMouseDown: () => handleSelect(fruit), children: fruit.label }, fruit.id))) })), selected && (_jsxs("p", { className: selectedTextClassName, children: ["You selected: ", _jsx("strong", { children: selected.label })] }))] }));
 };

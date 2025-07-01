@@ -8,19 +8,28 @@ type SearchBarProps = {
   onUserTyping?: () => void;
   placeholder?: string;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  className?: string;
+  inputClassName?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
+/**
+ * Headless SearchBar: No default styles, only logic and structure.
+ * - className: for the wrapper
+ * - inputClassName: for the input
+ */
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
   onUserTyping,
   placeholder = "Search...",
   onKeyDown,
+  className = "",
+  inputClassName = "",
   ...rest
 }) => {
   return (
-    <div className="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 w-full max-w-md bg-white shadow-sm focus-within:ring-2 focus-within:ring-blue-400 transition">
-      <Search className="w-4 h-4 text-gray-500" aria-hidden="true" />
+    <div className={`flex items-center flex-1 ${className}`}>
+      <Search />
       <Input
         value={value}
         onChange={(e) => {
@@ -29,7 +38,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         }}
         onKeyDown={onKeyDown}
         placeholder={placeholder}
-        className="flex-1 border-none shadow-none text-sm placeholder-gray-400 focus:outline-none"
+        className={inputClassName}
         {...rest}
       />
     </div>

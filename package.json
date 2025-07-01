@@ -3,31 +3,53 @@
   "version": "0.1.4",
   "description": "React autocomplete components with both voice and manual (typed) search support, including Algolia, Fuse.js, API, and mock data options.",
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsc --declaration --emitDeclarationOnly false",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "peerDependencies": {
+    "algoliasearch": "^5.29.0",
+    "clsx": "^2.1.1",
+    "fuse.js": "^7.1.0",
     "lucide-react": "^0.514.0",
     "react": ">=18",
-    "react-dom": ">=18",
-    "fuse.js": "^7.1.0",
-    "algoliasearch": "^5.29.0",
-    "clsx": "^2.1.1"
+    "react-dom": ">=18"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/node": "^24.0.7",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
-    "lucide-react": "^0.514.0"
+    "lucide-react": "^0.514.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/dev-aditya-2/react-voice-autocomplete"
   },
-  "keywords": ["react", "autocomplete", "search", "voice", "manual", "algolia", "fuse.js", "voice search"],
+  "keywords": [
+    "react",
+    "autocomplete",
+    "search",
+    "voice",
+    "manual",
+    "algolia",
+    "fuse.js",
+    "voice search"
+  ],
   "author": "Aditya dev",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "meilisearch": "^0.51.0"
+  }
 }

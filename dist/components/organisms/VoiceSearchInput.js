@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { VoiceStatusIndicator } from "../atoms/VoiceStatusIndicator";
 import { useVoiceRecognition } from "../../hooks/useVoiceRecognition";
 import { MicButton } from "../atoms/MicButton";
-export const VoiceSearchInput = ({ onResult, onError, }) => {
+export const VoiceSearchInput = ({ onResult, onError, micButtonClassName = "", wrapperClassName = "", }) => {
     const { transcript, isListening, toggleListening, status, voiceError } = useVoiceRecognition();
     const wasListeningRef = useRef(false);
     const handleToggleListening = () => {
@@ -21,5 +21,5 @@ export const VoiceSearchInput = ({ onResult, onError, }) => {
             onError(voiceError);
         }
     }, [voiceError, onError]);
-    return (_jsxs("div", { className: "flex flex-col items-center space-y-1", children: [_jsx(MicButton, { onClick: handleToggleListening, isListening: isListening }), _jsx(VoiceStatusIndicator, { isListening: isListening, transcript: transcript, status: status })] }));
+    return (_jsxs("div", { className: wrapperClassName, children: [_jsx(MicButton, { onClick: handleToggleListening, isListening: isListening, className: micButtonClassName }), _jsx(VoiceStatusIndicator, { isListening: isListening, transcript: transcript, status: status })] }));
 };

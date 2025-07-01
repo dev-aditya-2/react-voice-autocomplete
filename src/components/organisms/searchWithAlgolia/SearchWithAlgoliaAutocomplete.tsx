@@ -24,7 +24,46 @@ type Suggestion = {
 
 const index = "algolia_movie_sample_dataset";
 
-export const SearchWithAlgoliaAutocomplete: React.FC = () => {
+type SearchWithAlgoliaAutocompleteProps = {
+  appId: string;
+  searchKey: string;
+  containerClassName?: string;
+  searchBarClassName?: string;
+  inputClassName?: string;
+  resultsListClassName?: string;
+  selectedTextClassName?: string;
+  micButtonClassName?: string;
+  voiceWrapperClassName?: string;
+  resultItemClassName?: string;
+  loadingIndicatorClassName?: string;
+  loadingIndicator?: React.ReactNode;
+  selectedItemClassName?: string;
+};
+
+/**
+ * Headless SearchWithAlgoliaAutocomplete: No default styles, only logic and structure.
+ * - containerClassName: for the search bar wrapper
+ * - searchBarClassName: for the search bar
+ * - resultsListClassName: for the results list
+ * - selectedTextClassName: for the selected result details
+ */
+export const SearchWithAlgoliaAutocomplete: React.FC<
+  SearchWithAlgoliaAutocompleteProps
+> = ({
+  appId,
+  searchKey,
+  containerClassName = "",
+  searchBarClassName = "",
+  inputClassName = "",
+  resultsListClassName = "",
+  selectedTextClassName = "",
+  micButtonClassName = "",
+  voiceWrapperClassName = "",
+  resultItemClassName = "",
+  loadingIndicatorClassName = "",
+  loadingIndicator,
+  selectedItemClassName = "",
+}) => {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
   const [selected, setSelected] = useState<Suggestion | null>(null);
@@ -32,10 +71,10 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceRef = useRef<number | null>(null);
   const suppressSearchRef = useRef(false);
   const justSelectedRef = useRef(false);
-  const client = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!, process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY!);
+  const client = algoliasearch(appId, searchKey);
 
   const search = async (query: string) => {
     if (!query.trim()) {
@@ -65,7 +104,7 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
       return;
     }
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
+    debounceRef.current = window.setTimeout(() => {
       if (inputValue.trim()) {
         search(inputValue);
       } else {
@@ -77,7 +116,7 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
     if (justSelectedRef.current) {
       const timer = setTimeout(() => {
         justSelectedRef.current = false;
-      }, 300); 
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [selected]);
@@ -108,13 +147,12 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
   const listboxId = "autocomplete-options";
   return (
     <div
-      className="w-full max-w-md space-y-4"
       role="combobox"
       aria-haspopup="listbox"
       aria-owns={listboxId}
       aria-expanded={results.length > 0}
     >
-      <div className="relative flex gap-2 items-center">
+      <div className={containerClassName}>
         <SearchBar
           value={inputValue}
           onChange={(e) => {
@@ -133,6 +171,8 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
           aria-activedescendant={
             activeIndex >= 0 ? `suggestion-${activeIndex}` : undefined
           }
+          className={searchBarClassName}
+          inputClassName={inputClassName}
         />
         <VoiceSearchInput
           onResult={(text) => {
@@ -141,57 +181,53 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
             setInputMode("voice");
           }}
           onError={(err) => setVoiceError(err)}
+          micButtonClassName={micButtonClassName}
+          wrapperClassName={voiceWrapperClassName}
         />
       </div>
 
       {voiceError && <VoiceErrorBanner message={voiceError} />}
-      {isLoading && <LoadingIndicator message="Searching..." />}
-      {showEmptyState && (
+      {isLoading &&
+        (loadingIndicator ? (
+          <div className={loadingIndicatorClassName}>{loadingIndicator}</div>
+        ) : (
+          <LoadingIndicator
+            message="Searching..."
+            className={loadingIndicatorClassName}
+          />
+        ))}
+      {!isLoading && showEmptyState && (
         <EmptyStateMessage message="No results found for your search." />
       )}
       {voiceError && <VoiceErrorBanner message={voiceError} />}
 
       {!isLoading && results.length > 0 && (
-        <ul className="left-0 right-0 z-10 mt-1 border border-gray-300 bg-white rounded-md shadow-md max-h-60 overflow-y-auto">
+        <ul
+          className={clsx(
+            resultsListClassName,
+            "border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100 mt-2"
+          )}
+        >
           {results.map((result, index) => (
             <li
               key={result.objectID}
               className={clsx(
-                "px-4 py-2 text-sm text-gray-700 cursor-pointer transition-colors",
-                index === activeIndex
-                  ? "bg-blue-100 font-medium"
-                  : "hover:bg-gray-100"
+                resultItemClassName,
+                "flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-blue-50 focus:bg-blue-100 transition"
               )}
               onClick={() => handleSelect(result)}
             >
               <img
                 src={result.poster_path}
                 alt={result.title}
-                className="w-16 h-24 object-cover rounded"
+                className="w-12 h-16 object-cover rounded flex-shrink-0"
               />
-              <div className="flex-1">
-                <h3 className="text-md font-semibold">{result.title}</h3>
-                <p className="text-sm text-gray-600">{result.release_date}</p>
-                <p className="text-sm mt-1 text-gray-700 line-clamp-2">
-                  {result.overview}
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-400" />{" "}
-                    {result.vote_average}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Flame className="w-4 h-4 text-red-500" />{" "}
-                    {Math.round(result.popularity)}
-                  </span>
-                  {result.genres.map((genre) => (
-                    <span
-                      key={genre}
-                      className="px-2 py-0.5 bg-gray-200 rounded"
-                    >
-                      {genre}
-                    </span>
-                  ))}
+              <div className="min-w-0">
+                <div className="font-semibold text-sm truncate">
+                  {result.title}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {result.release_date}
                 </div>
               </div>
             </li>
@@ -200,13 +236,18 @@ export const SearchWithAlgoliaAutocomplete: React.FC = () => {
       )}
 
       {selected && (
-        <div className="mt-6 flex gap-4 items-start p-4 border border-gray-200 rounded-md bg-gray-50">
+        <div
+          className={clsx(
+            selectedItemClassName,
+            "flex items-start gap-4 mt-4 p-4 border rounded bg-gray-50 shadow-sm max-w-xl"
+          )}
+        >
           <img
             src={selected.poster_path}
             alt={selected.title}
-            className="w-28 h-auto rounded-md object-cover shadow"
+            className="w-28 h-16 object-cover rounded flex-shrink-0"
           />
-          <div>
+          <div className="min-w-0 flex-1">
             <h2 className="text-xl font-semibold mb-1">{selected.title}</h2>
             <p className="text-sm text-gray-600 mb-2">
               <span className="font-medium">Release Date:</span>{" "}

@@ -17,7 +17,29 @@ const fuse = new Fuse(fruits, {
   threshold: 0.3,
 });
 
-export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC = () => {
+export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC<{
+  containerClassName?: string;
+  searchBarClassName?: string;
+  inputClassName?: string;
+  resultsListClassName?: string;
+  selectedTextClassName?: string;
+  micButtonClassName?: string;
+  voiceWrapperClassName?: string;
+  resultItemClassName?: string;
+  loadingIndicatorClassName?: string;
+  loadingIndicator?: React.ReactNode;
+}> = ({
+  containerClassName = "",
+  searchBarClassName = "",
+  inputClassName = "",
+  resultsListClassName = "",
+  selectedTextClassName = "",
+  micButtonClassName = "",
+  voiceWrapperClassName = "",
+  resultItemClassName = "",
+  loadingIndicatorClassName = "",
+  loadingIndicator,
+}) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Fruit[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -69,13 +91,12 @@ export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC = () => {
 
   return (
     <div
-      className="w-full max-w-md space-y-4"
       role="combobox"
       aria-haspopup="listbox"
       aria-owns={listboxId}
       aria-expanded={results.length > 0}
     >
-      <div className="relative flex gap-2 items-center">
+      <div className={containerClassName}>
         <SearchBar
           value={query}
           onChange={(e) => {
@@ -90,6 +111,8 @@ export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC = () => {
           aria-activedescendant={
             activeIndex >= 0 ? `suggestion-${activeIndex}` : undefined
           }
+          className={searchBarClassName}
+          inputClassName={inputClassName}
         />
         <VoiceSearchInput
           onResult={(text) => {
@@ -98,9 +121,17 @@ export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC = () => {
             }
           }}
           onError={(err) => setVoiceError(err)}
+          micButtonClassName={micButtonClassName}
+          wrapperClassName={voiceWrapperClassName}
         />
       </div>
-      {isLoading && <LoadingIndicator message="Searching..." />}
+      {isLoading && (
+        loadingIndicator ? (
+          <div className={loadingIndicatorClassName}>{loadingIndicator}</div>
+        ) : (
+          <LoadingIndicator message="Searching..." className={loadingIndicatorClassName} />
+        )
+      )}  
       {!isLoading && query && !selected && results.length === 0 && (
         <EmptyStateMessage message="No results found for your search." />
       )}
@@ -110,20 +141,18 @@ export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC = () => {
         <ul
           id={listboxId}
           role="listbox"
-          className="border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100"
+          className={resultsListClassName}
         >
           {results.map((fruit, index) => (
             <li
               key={fruit.id}
               role="option"
               aria-selected={index === activeIndex}
+              onMouseDown={() => handleSelect(fruit)}              
               className={clsx(
-                "px-4 py-2 text-sm text-gray-700 cursor-pointer transition-colors",
-                index === activeIndex
-                  ? "bg-blue-100 font-medium"
-                  : "hover:bg-gray-100"
+                resultItemClassName,
+                "flex items-center gap-4 px-4 py-2 cursor-pointer hover:bg-blue-50 focus:bg-blue-100 transition"
               )}
-              onMouseDown={() => handleSelect(fruit)}
             >
               {fruit.name}
             </li>
@@ -132,7 +161,7 @@ export const SearchWithFusePlusVoiceSearchAutocomplete: React.FC = () => {
       )}
 
       {selected && (
-        <p className="text-gray-700">
+        <p className={selectedTextClassName}>
           You selected: <strong>{selected.name}</strong>
         </p>
       )}

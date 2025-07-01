@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { VoiceStatusIndicator } from "../atoms/VoiceStatusIndicator";
 import { useVoiceRecognition } from "../../hooks/useVoiceRecognition";
@@ -7,11 +6,15 @@ import { MicButton } from "../atoms/MicButton";
 type VoiceSearchInputProps = {
   onResult: (text: string) => void;
   onError?: (error: string) => void;
+  micButtonClassName?: string;
+  wrapperClassName?: string;
 };
 
 export const VoiceSearchInput: React.FC<VoiceSearchInputProps> = ({
   onResult,
   onError,
+  micButtonClassName = "",
+  wrapperClassName = "",
 }) => {
   const { transcript, isListening, toggleListening, status, voiceError } =
     useVoiceRecognition();
@@ -34,8 +37,12 @@ export const VoiceSearchInput: React.FC<VoiceSearchInputProps> = ({
     }
   }, [voiceError, onError]);
   return (
-    <div className="flex flex-col items-center space-y-1">
-      <MicButton onClick={handleToggleListening} isListening={isListening} />
+    <div className={wrapperClassName}>
+      <MicButton
+        onClick={handleToggleListening}
+        isListening={isListening}
+        className={micButtonClassName}
+      />
       <VoiceStatusIndicator
         isListening={isListening}
         transcript={transcript}

@@ -14,6 +14,16 @@ type Suggestion = {
 type SearchWithFuseSearchAutocompleteProps = {
   fetchSuggestions?: (query: string) => Promise<Suggestion[]>;
   placeholder?: string;
+  containerClassName?: string;
+  searchBarClassName?: string;
+  inputClassName?: string;
+  resultsListClassName?: string;
+  selectedTextClassName?: string;
+  micButtonClassName?: string;
+  voiceWrapperClassName?: string;
+  resultItemClassName?: string;
+  loadingIndicatorClassName?: string;
+  loadingIndicator?: React.ReactNode;
 };
 
 const defaultFetchSuggestions = async (query: string): Promise<Suggestion[]> => {
@@ -21,9 +31,26 @@ const defaultFetchSuggestions = async (query: string): Promise<Suggestion[]> => 
   return res.json();
 };
 
+/**
+ * Headless SearchWithFuseSearchAutocomplete: No default styles, only logic and structure.
+ * - containerClassName: for the search bar wrapper
+ * - searchBarClassName: for the search bar
+ * - resultsListClassName: for the results list
+ * - selectedTextClassName: for the selected text
+ */
 export const SearchWithFuseSearchAutocomplete: React.FC<SearchWithFuseSearchAutocompleteProps> = ({
   fetchSuggestions = defaultFetchSuggestions,
   placeholder = "Search for fruits...",
+  containerClassName = "",
+  searchBarClassName = "",
+  inputClassName = "",
+  resultsListClassName = "",
+  selectedTextClassName = "",
+  micButtonClassName = "",
+  voiceWrapperClassName = "",
+  resultItemClassName = "",
+  loadingIndicatorClassName = "",
+  loadingIndicator,
 }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Suggestion[]>([]);
@@ -73,13 +100,12 @@ export const SearchWithFuseSearchAutocomplete: React.FC<SearchWithFuseSearchAuto
   const listboxId = "autocomplete-options";
   return (
     <div
-      className="w-full max-w-md space-y-4"
       role="combobox"
       aria-haspopup="listbox"
       aria-owns={listboxId}
       aria-expanded={results.length > 0}
     >
-      <div className="relative">
+      <div className={containerClassName}>
         <SearchBar
           value={query}
           onChange={(e) => {
@@ -94,39 +120,47 @@ export const SearchWithFuseSearchAutocomplete: React.FC<SearchWithFuseSearchAuto
           aria-activedescendant={
             activeIndex >= 0 ? `option-${results[activeIndex].id}` : undefined
           }
+          className={searchBarClassName}
+          inputClassName={inputClassName}
         />
-        {isLoading && <LoadingIndicator message="Searching..." />}
-        {!isLoading && query && !selected && results.length === 0 && (
-          <EmptyStateMessage message="No results found for your search." />
-        )}
-        {!isLoading && query && results.length > 0 && (
-          <ul
-            id={listboxId}
-            role="listbox"
-            className="border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100"
-          >
-            {results.map((fruit, index) => (
-              <li
-                key={fruit.id}
-                role="option"
-                aria-selected={index === activeIndex}
-                className={clsx(
-                  "px-4 py-2 text-sm text-gray-700 cursor-pointer transition-colors",
-                  index === activeIndex
-                    ? "bg-blue-100 font-medium"
-                    : "hover:bg-gray-100"
-                )}
-                onMouseDown={() => handleSelect(fruit)}
-              >
-                {fruit.label}
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
-
+      {isLoading && (
+        loadingIndicator ? (
+          <div className={loadingIndicatorClassName}>{loadingIndicator}</div>
+        ) : (
+          <LoadingIndicator message="Searching..." className={loadingIndicatorClassName} />
+        )
+      )}
+      {!isLoading && query && !selected && results.length === 0 && (
+        <EmptyStateMessage message="No results found for your search." />
+      )}
+      {!isLoading && query && results.length > 0 && (
+        <ul
+          id={listboxId}
+          role="listbox"
+          className={clsx(
+            resultsListClassName,
+            "border rounded-md shadow bg-white max-h-60 overflow-y-auto divide-y divide-gray-100 mt-2"
+          )}
+        >
+          {results.map((fruit, index) => (
+            <li
+              key={fruit.id}
+              role="option"
+              aria-selected={index === activeIndex}
+              className={clsx(
+                resultItemClassName,
+                "px-4 py-2 cursor-pointer hover:bg-blue-50 focus:bg-blue-100 transition"
+              )}
+              onMouseDown={() => handleSelect(fruit)}
+            >
+              {fruit.label}
+            </li>
+          ))}
+        </ul>
+      )}
       {selected && (
-        <p className="text-gray-700">
+        <p className={selectedTextClassName}>
           You selected: <strong>{selected.label}</strong>
         </p>
       )}
